@@ -6,120 +6,289 @@
 <title>เลขศาสตร์ทะเบียนรถ</title>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&family=Sarabun:wght@300;400&display=swap" rel="stylesheet">
 <style>
+/* ===================== Design tokens ===================== */
 :root {
-  --bg: #0b111e;
   --gold: #d4af37;
   --gold-gradient: linear-gradient(135deg, #f59e0b 0%, #d4af37 50%, #b45309 100%);
+
+  /* Dark mode (ค่าเริ่มต้น) */
+  --bg:            #0b111e;
+  --card-bg:       rgba(15,23,42,0.85);
+  --input-bg:      rgba(9,13,22,0.9);
+  --input-border:  rgba(255,255,255,0.15);
+  --text:          #ffffff;
+  --text-sub:      #cbd5e1;
+  --text-muted:    #64748b;
+  --char-bg:       #ffffff;
+  --char-text:     #0f172a;
+  --char-val:      #b45309;
+  --desc-bg:       rgba(255,255,255,0.08);
+  --desc-border:   rgba(255,255,255,0.1);
+  --desc-inner:    rgba(212,175,55,0.15);
+  --desc-divider:  rgba(255,255,255,0.15);
+  --mini-sum-bg:   rgba(0,0,0,0.3);
+  --wallpaper-overlay: rgba(11,17,30,0.65), rgba(11,17,30,0.75);
 }
 
+/* Light mode — ตามธีมมือถือ */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:            #f0e9d8;
+    --card-bg:       rgba(255,248,235,0.92);
+    --input-bg:      rgba(255,252,245,0.95);
+    --input-border:  rgba(180,130,40,0.35);
+    --text:          #1a1305;
+    --text-sub:      #4a3d20;
+    --text-muted:    #8a7650;
+    --char-bg:       #fff8eb;
+    --char-text:     #1a1305;
+    --char-val:      #92400e;
+    --desc-bg:       rgba(255,248,230,0.9);
+    --desc-border:   rgba(180,130,40,0.25);
+    --desc-inner:    rgba(212,175,55,0.2);
+    --desc-divider:  rgba(180,130,40,0.25);
+    --mini-sum-bg:   rgba(212,175,55,0.15);
+    --wallpaper-overlay: rgba(240,233,216,0.55), rgba(240,233,216,0.65);
+  }
+}
+
+/* ===================== Reset ===================== */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ===================== Body ===================== */
 body {
   background-color: var(--bg);
   background-image:
-    linear-gradient(rgba(11,17,30,0.65), rgba(11,17,30,0.75)),
+    linear-gradient(var(--wallpaper-overlay)),
     url('https://drive.google.com/thumbnail?id=16-YuEsRl_zTgsVnPuZbpWYXYH96F7U7n&sz=s4000');
   background-size: cover;
-  background-position: center 0px;
+  background-position: center top;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  color: white;
+  color: var(--text);
   font-family: 'Sarabun', sans-serif;
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  padding: 30px 16px 60px;
+  /* padding ใช้ clamp: น้อยสุด 16px, ปกติ 4vw, มากสุด 40px */
+  padding: clamp(16px, 4vw, 40px) clamp(12px, 4vw, 24px) clamp(40px, 8vw, 80px);
 }
 
-.app-card { width: 100%; max-width: 650px; text-align: center; }
+.app-card {
+  width: 100%;
+  max-width: min(650px, 100%);
+  text-align: center;
+}
 
+/* ===================== Typography — fluid ===================== */
 .sub-t {
-  color: var(--gold); letter-spacing: 4px; font-size: 13px;
-  margin-bottom: 10px; font-family: 'Prompt';
+  color: var(--gold);
+  letter-spacing: clamp(2px, 0.5vw, 4px);
+  font-size: clamp(11px, 1.5vw, 13px);
+  margin-bottom: clamp(6px, 1.5vw, 10px);
+  font-family: 'Prompt';
   text-shadow: 0 0 8px rgba(212,175,55,0.4);
 }
-h1 { font-family: 'Prompt'; font-size: 32px; margin: 0 0 8px 0; line-height: 1.3; }
-.subtitle { font-size: 13px; color: #cbd5e1; margin-bottom: 28px; }
 
-.input-box {
-  background: rgba(15,23,42,0.85); padding: 26px; border-radius: 16px;
-  border: 1px solid rgba(212,175,55,0.3); margin-bottom: 24px;
+h1 {
+  font-family: 'Prompt';
+  font-size: clamp(22px, 5vw, 34px);
+  margin: 0 0 clamp(4px, 1vw, 8px) 0;
+  line-height: 1.3;
+  color: var(--text);
 }
-.input-label { display: block; text-align: left; font-family: 'Prompt'; font-size: 13px; color: var(--gold); margin-bottom: 10px; }
-.input-group { display: flex; gap: 10px; }
+
+.subtitle {
+  font-size: clamp(12px, 1.8vw, 14px);
+  color: var(--text-sub);
+  margin-bottom: clamp(16px, 4vw, 28px);
+}
+
+/* ===================== Input card ===================== */
+.input-box {
+  background: var(--card-bg);
+  padding: clamp(16px, 4vw, 26px);
+  border-radius: 16px;
+  border: 1px solid rgba(212,175,55,0.3);
+  margin-bottom: clamp(16px, 4vw, 24px);
+  backdrop-filter: blur(8px);
+}
+
+.input-label {
+  display: block; text-align: left;
+  font-family: 'Prompt';
+  font-size: clamp(12px, 1.6vw, 13px);
+  color: var(--gold);
+  margin-bottom: clamp(6px, 1.5vw, 10px);
+}
+
+.input-group { display: flex; gap: clamp(6px, 2vw, 10px); }
+
 input[type="text"] {
-  flex: 1; padding: 15px; border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.15);
-  background: rgba(9,13,22,0.9); color: white;
-  font-size: 18px; font-family: 'Sarabun', sans-serif;
+  flex: 1;
+  padding: clamp(10px, 2.5vw, 15px);
+  border-radius: 8px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: clamp(15px, 3vw, 18px);
+  font-family: 'Sarabun', sans-serif;
+  min-width: 0; /* ป้องกัน overflow บนจอเล็ก */
 }
 input[type="text"]:focus { outline: none; border-color: var(--gold); }
-input[type="text"]::placeholder { color: #64748b; }
+input[type="text"]::placeholder { color: var(--text-muted); }
+
 button.calc-btn {
-  padding: 15px 26px; background: var(--gold-gradient);
+  padding: clamp(10px, 2.5vw, 15px) clamp(14px, 3vw, 26px);
+  background: var(--gold-gradient);
   border: none; border-radius: 8px; cursor: pointer;
-  font-family: 'Prompt'; font-weight: bold; color: #1a1305; font-size: 14px;
+  font-family: 'Prompt'; font-weight: bold;
+  color: #1a1305;
+  font-size: clamp(13px, 2vw, 15px);
+  white-space: nowrap;
   transition: filter 0.15s;
+  flex-shrink: 0;
 }
 button.calc-btn:hover { filter: brightness(1.1); }
-button.calc-btn:active { filter: brightness(0.95); }
-.input-note { font-size: 11px; color: #64748b; margin-top: 10px; text-align: left; }
-.error-msg { font-size: 13px; color: #ff8a8a; margin-top: 10px; font-weight: 600; text-align: left; display: none; }
+button.calc-btn:active { filter: brightness(0.9); }
 
+.input-note {
+  font-size: clamp(10px, 1.5vw, 11px);
+  color: var(--text-muted);
+  margin-top: clamp(6px, 1.5vw, 10px);
+  text-align: left;
+}
+.error-msg {
+  font-size: clamp(12px, 1.8vw, 13px);
+  color: #ff8a8a;
+  margin-top: 10px; font-weight: 600;
+  text-align: left; display: none;
+}
+
+/* ===================== Result ===================== */
 .result-area { display: none; }
 
-.split-title { font-family: 'Prompt'; font-size: 12px; color: #94a3b8; letter-spacing: 2px; margin-bottom: 14px; }
-.char-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 12px; }
-.char-box {
-  background: #fff; color: #0f172a; border-radius: 12px;
-  width: 50px; padding: 12px 0;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 2px solid var(--gold);
+.split-title {
+  font-family: 'Prompt';
+  font-size: clamp(10px, 1.5vw, 12px);
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  margin-bottom: clamp(10px, 2vw, 14px);
 }
-.char-name { font-family: 'Prompt'; font-size: 20px; font-weight: bold; }
-.char-val { font-size: 11px; color: #b45309; margin-top: 2px; font-weight: bold; }
 
-.sum-text-label { font-family: 'Prompt'; font-size: 13px; color: #94a3b8; margin-top: 20px; margin-bottom: 14px; }
+.char-container {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: clamp(5px, 1.5vw, 8px);
+  margin-bottom: clamp(8px, 2vw, 12px);
+}
+
+.char-box {
+  background: var(--char-bg);
+  color: var(--char-text);
+  border-radius: 12px;
+  width: clamp(40px, 8vw, 50px);
+  padding: clamp(8px, 2vw, 12px) 0;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  border: 2px solid var(--gold);
+}
+.char-name {
+  font-family: 'Prompt'; font-weight: bold;
+  font-size: clamp(15px, 3.5vw, 20px);
+}
+.char-val {
+  font-size: clamp(9px, 1.5vw, 11px);
+  color: var(--char-val);
+  margin-top: 2px; font-weight: bold;
+}
+
+.sum-text-label {
+  font-family: 'Prompt';
+  font-size: clamp(11px, 1.8vw, 13px);
+  color: var(--text-muted);
+  margin-top: clamp(12px, 3vw, 20px);
+  margin-bottom: clamp(10px, 2.5vw, 14px);
+}
+
 .mini-sum {
-  font-family: 'Prompt'; font-size: 18px; font-weight: bold; color: var(--gold);
-  background: rgba(0,0,0,0.3); display: inline-block;
-  padding: 5px 18px; border-radius: 20px; border: 1px solid rgba(212,175,55,0.3);
+  font-family: 'Prompt'; font-weight: bold;
+  font-size: clamp(14px, 2.5vw, 18px);
+  color: var(--gold);
+  background: var(--mini-sum-bg);
+  display: inline-block;
+  padding: 5px 18px; border-radius: 20px;
+  border: 1px solid rgba(212,175,55,0.3);
 }
 
 .circle-sum {
-  width: 96px; height: 96px; border-radius: 50%;
+  width: clamp(72px, 15vw, 96px);
+  height: clamp(72px, 15vw, 96px);
+  border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  margin: 24px auto 16px; font-size: 38px; font-weight: bold;
-  border: 4px solid #fff; font-family: 'Prompt';
+  margin: clamp(16px, 4vw, 24px) auto clamp(12px, 3vw, 16px);
+  font-size: clamp(28px, 6vw, 38px);
+  font-weight: bold;
+  border: 4px solid rgba(255,255,255,0.8);
+  font-family: 'Prompt';
   box-shadow: 0 0 35px rgba(212,175,55,0.5);
-  color: #0f172a; background: var(--gold-gradient);
+  color: #0f172a;
+  background: var(--gold-gradient);
   transition: background 0.3s, box-shadow 0.3s;
 }
 
 .grade-badge {
-  display: inline-block; padding: 6px 20px; border-radius: 20px;
-  font-family: 'Prompt'; font-weight: 600; font-size: 13px;
-  margin-bottom: 28px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  display: inline-block;
+  padding: clamp(4px, 1vw, 6px) clamp(14px, 3vw, 20px);
+  border-radius: 20px; font-family: 'Prompt';
+  font-weight: 600;
+  font-size: clamp(12px, 1.8vw, 13px);
+  margin-bottom: clamp(16px, 4vw, 28px);
+  color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   transition: background-color 0.3s;
 }
 
 .desc-card {
-  background: rgba(255,255,255,0.08); backdrop-filter: blur(12px);
-  color: #fff; padding: 32px; border-radius: 16px; text-align: left;
-  line-height: 1.85; box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-  position: relative; border: 1px solid rgba(255,255,255,0.1);
+  background: var(--desc-bg);
+  backdrop-filter: blur(12px);
+  color: var(--text);
+  padding: clamp(18px, 5vw, 32px);
+  border-radius: 16px; text-align: left;
+  line-height: 1.85;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+  position: relative;
+  border: 1px solid var(--desc-border);
 }
 .desc-card::before {
-  content: ""; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
-  border: 1px solid rgba(212,175,55,0.15); border-radius: 10px; pointer-events: none;
+  content: ""; position: absolute;
+  top: 10px; left: 10px; right: 10px; bottom: 10px;
+  border: 1px solid var(--desc-inner);
+  border-radius: 10px; pointer-events: none;
 }
 .desc-card h3 {
-  color: var(--gold); border-bottom: 1px solid rgba(255,255,255,0.15);
-  padding-bottom: 14px; margin-bottom: 20px;
-  font-family: 'Prompt'; font-size: 22px; font-weight: 600;
+  color: var(--gold);
+  border-bottom: 1px solid var(--desc-divider);
+  padding-bottom: clamp(10px, 2vw, 14px);
+  margin-bottom: clamp(12px, 3vw, 20px);
+  font-family: 'Prompt';
+  font-size: clamp(17px, 3.5vw, 22px);
+  font-weight: 600;
 }
-.desc-card p { font-size: 15px; }
+.desc-card p {
+  font-size: clamp(13px, 2.2vw, 15px);
+  color: var(--text-sub);
+}
 
-.footer-note { font-size: 11px; color: #64748b; line-height: 1.7; margin-top: 30px; }
+.footer-note {
+  font-size: clamp(10px, 1.5vw, 11px);
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-top: clamp(20px, 4vw, 30px);
+}
+
+/* ===================== Small phone (<380px) ===================== */
+@media (max-width: 380px) {
+  .input-group { flex-direction: column; }
+  button.calc-btn { width: 100%; }
+}
 </style>
 </head>
 <body>
